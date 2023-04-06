@@ -4,6 +4,7 @@ import './ui/site/hompage_screen.dart';
 
 import './ui/product/product_screen.dart';
 import './ui/news/news_screen.dart';
+import './ui/site/test.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -17,10 +18,11 @@ class _HomepageState extends State<Homepage> {
  
   final List<Widget> pages = [
     const HomePageScreen(),
+    // const TestApp(),
     // const Text('Trang chu'),
     const ProductScreen(),
     const NewsScreen(),
-    const Text("setting"),
+    const TestApp(),
   ];
   @override
   Widget build(BuildContext context) {

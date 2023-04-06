@@ -7,13 +7,13 @@ import '../../models/product.dart';
 class HomepageRow extends StatelessWidget {
   final String title;
   const HomepageRow({super.key, required this.title});
+  Future<void> getAll(BuildContext context) async {
+    await context.read<ProductsManager>().fetchProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // final productsManager = context.read<ProductsManager>();
-    final products = context.select<ProductsManager, List<Product>>(
-        (productsManager) => productsManager.items);
-    // final products = productsManager.
+    final productsManager = ProductsManager();
     return Column(children: [
       Padding(
         padding: const EdgeInsets.all(20.0),
@@ -30,22 +30,22 @@ class HomepageRow extends StatelessWidget {
       ),
       Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: SizedBox(
-          width: double.infinity,
-          height: 200.0,
-          child: GridView.builder(
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: products.length,
-            itemBuilder: (context, index) =>
-                homepageGirdTite(products[index], context),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                childAspectRatio: 1,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10),
-          ),
-        ),
+        child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            width: double.infinity,
+            height: 200.0,
+            // child: homepageGirdView(products),
+            child: FutureBuilder(
+              future: getAll(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return homepageGirdView(productsManager);
+              },
+            )),
       ),
     ]);
   }
@@ -70,7 +70,7 @@ class HomepageRow extends StatelessWidget {
                     .pushNamed(ProductDetailScreen.routeName, arguments: '1');
               },
               child: Image.network(
-                products.imageUrl,
+                products.image,
                 height: 100.0,
                 width: 100.0,
                 fit: BoxFit.cover,
@@ -78,5 +78,29 @@ class HomepageRow extends StatelessWidget {
             )),
       ),
     );
+  }
+
+  Widget homepageGirdView(ProductsManager productsManager) {
+    return Consumer<ProductsManager>(builder: (ctx, productsManager, child) {
+      if (productsManager.itemAcount == 0) {
+        return const Padding(
+          padding:  EdgeInsets.all(10.0),
+          child:  Text('Không có sản phẩm', style: TextStyle(fontSize: 20.0),),
+        );
+      } else {
+        return GridView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: productsManager.itemAcount,
+          itemBuilder: (context, index) =>
+              homepageGirdTite(productsManager.items[index], context),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              childAspectRatio: 1,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10),
+        );
+      }
+    });
   }
 }

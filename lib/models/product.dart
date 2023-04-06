@@ -4,24 +4,26 @@ class Product {
   final String? id;
   final String name;
   final String description;
-  final double price;
-  final String imageUrl;
+  final int price;
+  final String image;
+
+  
    Map<String, dynamic> toJson() {
     return {
-      'title': name,
+      'name': name,
       'description': description,
       'price': price,
-      'imageUrl': imageUrl
+      'imageUrl': image
     };
   }
 
   static Product fromJson(Map<String, dynamic> json) {
     return Product(
-        id:json['id'],
+        id:json['_id'],
         name: json['name'],
         description: json['description'],
         price: json['price'],
-        imageUrl: json['imageUrl']);
+        image: json['image']);
   }
 
 
@@ -30,19 +32,19 @@ class Product {
       required this.name,
       required this.description,
       required this.price,
-      required this.imageUrl}
+      required this.image}
   );
 
    
 
-  Product copyWith(String? id, String? name, String? description, double? price,
-      String? imageUrl) {
+  Product copyWith(String? id, String? name, String? description, int? price,
+      String? image) {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       price: price ?? this.price,
-      imageUrl: imageUrl ?? this.imageUrl,
+      image: image ?? this.image,
     );
   }
 }
